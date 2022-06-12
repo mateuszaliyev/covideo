@@ -1,9 +1,9 @@
 import type { GetStaticProps } from "next";
-import dynamic from "next/dynamic";
 
 import { createSSGHelpers } from "@trpc/react/ssg";
 import superjson from "superjson";
 
+import { Chart } from "@/components/chart";
 import { Headline } from "@/components/headline";
 import { Layout } from "@/components/layout";
 import { Overline } from "@/components/overline";
@@ -12,10 +12,6 @@ import { useConfirmedCases } from "@/hooks/confirmed-cases";
 import { useSelectedCountry } from "@/hooks/selected-country";
 
 import { applicationRouter } from "@/routers";
-
-const Chart = dynamic<Record<string, never>>(() =>
-  import("@/components/chart").then((module) => module.Chart)
-);
 
 export const getStaticProps: GetStaticProps = async () => {
   const { dehydrate, fetchQuery } = createSSGHelpers({

@@ -10,9 +10,8 @@ import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { KeyboardKey } from "@/components/keyboard-key";
 
+import { useCountries } from "@/hooks/countries";
 import { useSelectedCountry } from "@/hooks/selected-country";
-
-import { useQuery } from "@/libraries/trpc";
 
 export type LayoutProps = {
   children: ReactNode;
@@ -25,24 +24,19 @@ export const Layout = ({ children, title }: LayoutProps) => {
 
   const { selectedCountry, setSelectedCountry } = useSelectedCountry();
 
-  const countries = useQuery(["country.all"], {
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-    staleTime: Infinity,
-  });
+  const { data } = useCountries();
 
   const filteredCountries = useMemo(() => {
-    if (!countries.data) {
+    if (!data) {
       return [];
     }
 
-    return countries.data.countries.filter((country) =>
+    return data.countries.filter((country) =>
       country.name.polish
         .toLowerCase()
         .includes(searchQuery.trim().toLowerCase())
     );
-  }, [countries, searchQuery]);
+  }, [data, searchQuery]);
 
   const handleDialogOpen = useCallback((event: KeyboardEvent) => {
     if (event.key === "/") {
@@ -87,7 +81,7 @@ export const Layout = ({ children, title }: LayoutProps) => {
         {children}
       </main>
       <Footer />
-      {countries.data && (
+      {data && (
         <Dialog
           afterEnter={() => {
             document

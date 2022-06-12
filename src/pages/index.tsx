@@ -8,9 +8,8 @@ import { Headline } from "@/components/headline";
 import { Layout } from "@/components/layout";
 import { Overline } from "@/components/overline";
 
+import { useConfirmedCases } from "@/hooks/confirmed-cases";
 import { useSelectedCountry } from "@/hooks/selected-country";
-
-import { useQuery } from "@/libraries/trpc";
 
 import { applicationRouter } from "@/routers";
 
@@ -42,20 +41,7 @@ export const getStaticProps: GetStaticProps = async () => {
 const Home = () => {
   const { selectedCountry } = useSelectedCountry();
 
-  const { data } = useQuery(
-    [
-      "case.confirmed",
-      {
-        countrySlug: selectedCountry?.slug ?? "poland",
-      },
-    ],
-    {
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-      staleTime: 1000 * 60 * 60 * 24,
-    }
-  );
+  const { data } = useConfirmedCases();
 
   const dailyCases = data
     ? data[data.length - 1].total - data[data.length - 2].total

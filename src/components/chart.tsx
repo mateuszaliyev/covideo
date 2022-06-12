@@ -15,9 +15,7 @@ import {
   Tooltip,
 } from "chart.js";
 
-import { useSelectedCountry } from "@/hooks/selected-country";
-
-import { useQuery } from "@/libraries/trpc";
+import { useConfirmedCases } from "@/hooks/confirmed-cases";
 
 export type ChartProps = Record<string, never>;
 
@@ -47,22 +45,7 @@ export const Chart = () => {
     labels: [],
   });
 
-  const { selectedCountry } = useSelectedCountry();
-
-  const { data } = useQuery(
-    [
-      "case.confirmed",
-      {
-        countrySlug: selectedCountry?.slug ?? "poland",
-      },
-    ],
-    {
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-      staleTime: 1000 * 60 * 60 * 24,
-    }
-  );
+  const { data } = useConfirmedCases();
 
   useEffect(() => {
     if (!data) {
